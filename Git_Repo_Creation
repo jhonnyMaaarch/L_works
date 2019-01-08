@@ -1,0 +1,20 @@
+#! /bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                         ###
+###                     email: osadeola@us.ibm.com                   ###
+###                     date: 01-07-2019                             ###
+### project: Module will create a new repository called "L_works"    ###
+### source: https://github.com/jhonnyMaaarch/L_works                 ###
+###                                                                  ###
+###                                                                  ###
+########################################################################
+########################################################################
+
+echo "# L_works" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/jhonnyMaaarch/L_works.git
+git push -u origin master
+
