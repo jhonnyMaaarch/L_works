@@ -1,0 +1,20 @@
+#! /bin/bash
+
+echo "enter number of files to add: "
+read NumFiles
+
+until [ "$NumFiles" -eq 0 ]
+do
+
+	echo "enter file: "
+	read FileName
+	array_Fname[NumFiles]="$FileName"
+	echo "You entered ${Fname[NumFiles]}"
+        DecrVal=1
+	let NumFiles=NumFiles-DecrVal
+done
+echo "${array_Fname[@]}"
+echo "${Fname[*]}"
+
+
+
