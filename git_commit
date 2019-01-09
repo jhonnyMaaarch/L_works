@@ -1,0 +1,52 @@
+
+#! /bin/bash
+#############################################################################################################
+#############################################################################################################
+###                     author: Sunny Adeola                                                              ###
+###                     email: osadeola@us.ibm.com                                                        ###
+###                     date: 01-07-2019                                                                  ###
+### project:Module will commit files to specified remote repo                                             ###
+### source:https://help.github.com/articles/adding-a-file-to-a-repository-using-the-command-line/#platform###
+### -linux                                                                                                ######                                                                                                       ######                                                                                                       ###
+###                                                                                                       ###
+#############################################################################################################
+#############################################################################################################
+echo "Enter github username:"
+read Git_userName
+echo "Enter gitgub repo name:"
+read Git_repo
+
+git remote add origin https://github.com/$Git_userName/$Git_repo
+echo "How many files do you want to move:" 
+read FileNum
+#echo "Enter the directory you want the files moved to:"
+#read Local_Dir
+
+while [ "$FileNum" -gt 0 ]
+do
+    echo "enter File name:"
+    read FileName
+    array_Fname[FileNum]="$FileName"
+    echo "You entered ${array_Fname[FileNum]}"
+#    cp -p ${array_Fname[FileNum]} "$Local_Dir"
+    cont=1
+    let FileNum=FileNum-cont # decrements $ FileNum
+    
+done
+echo "***All Files***"
+echo "${array_Fname[@]}"
+
+echo "Enter the directory you want the files moved to:"
+read Local_Dir
+cp -p ${array_Fname[@]} "$Local_Dir"
+
+git init "$Local_Dir"
+
+cd "$Local_Dir"
+
+git add "${array_Fname[FileNum]}".
+
+git commit -m "${array_Fname[FileNum]}"
+
+git push -u origin master
+#echo "${array_file[$FileNum]"
