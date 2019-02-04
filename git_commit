@@ -11,10 +11,10 @@
 ###                                                                                                       ###
 #############################################################################################################
 #############################################################################################################
-echo "Enter github username:"
-read Git_userName
-echo "Enter gitgub repo name:"
-read Git_repo
+# echo "Enter github username:"
+# read Git_userName
+# echo "Enter gitgub repo name:"
+# read Git_repo
 
 # git remote add origin https://github.com/$Git_userName/$Git_repo
 echo "How many files do you want to move:" 
