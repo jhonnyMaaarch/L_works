@@ -16,7 +16,7 @@ read Git_userName
 echo "Enter gitgub repo name:"
 read Git_repo
 
-git remote add origin https://github.com/$Git_userName/$Git_repo
+# git remote add origin https://github.com/$Git_userName/$Git_repo
 echo "How many files do you want to move:" 
 read FileNum
 #echo "Enter the directory you want the files moved to:"
@@ -36,17 +36,21 @@ done
 echo "***All Files***"
 echo "${array_Fname[@]}"
 
-echo "Enter the directory you want the files moved to:"
-read Local_Dir
-cp -p ${array_Fname[@]} "$Local_Dir"
+#echo "Enter the directory you want the files moved to:"
+read -p "Enter the directory from where you want the file moved: " Local_Dir
 
-git init "$Local_Dir"
+#cp -p ${array_Fname[@]} "$Local_Dir"
+cp -p $Local_Dir/${array_Fname[@]} ./
 
-cd "$Local_Dir"
+#git init "$Local_Dir"
+
+#cd "$Local_Dir"
 
 git add "${array_Fname[FileNum]}".
 
-git commit -m "${array_Fname[FileNum]}"
+read -p "Enter commit message" commit_Message
+# git commit -m "${array_Fname[FileNum]}"
 
+git commit -m "$commit_Message"
 git push -u origin master
 #echo "${array_file[$FileNum]"
