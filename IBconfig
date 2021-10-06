@@ -1,0 +1,80 @@
+#!/bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                         ###
+###                     email: osadeola@us.ibm.com                   ###
+###                     date: 01-07-2019                             ###
+### project: Module will require all IB parameters needed for IB con ###
+### figuration and perform the configuration                         ###
+###                                                                  ###
+########################################################################
+########################################################################
+cat /etc/*release
+read -p "Enter OS to install (e.g rhel7): " OS_ver
+
+
+read -p "Enter repository key domain name (e.g www.mellanox.com): " repo_key
+host $repo_key
+
+read -p "Enter first digit(s) in the IP address(es) above (e.g 91): " f_digit
+read -p "Enter first disgit in netmask (e.g 255): " f_net
+read -p "Enter gateway address (e.g 192.168.180.247): " g_way
+
+route add -net "$f_digit".0.0.0 netmask "$f_net".0.0.0 gw $g_way
+
+read -p "Enter repository namee (e.g linux.mellanox.com): " repo_dom
+host $repo_dom
+
+read -p "Enter first digit(s) in the IP address(es) above (e.g 91): " f_digit2
+read -p "Enter first disgit in netmask (e.g 255): " f_net2
+read -p "Enter gateway address (e.g 192.168.180.247): " g_way
+
+
+route add -net "$f_digit2".0.0.0 netmask "$f_net2".0.0.0 gw $g_way
+
+cd /etc/yum.repos.d/
+
+wget https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox
+
+wget https://linux.mellanox.com/public/repo/mlnx_ofed/latest/$OS_ver/mellanox_mlnx_ofed.repo
+
+yum search mlnx-ofed-
+
+yum install mlnx-ofed -all
+
+ibv_devinfo
+ibv_devices
+
+#Run relevant packages
+#yum groupinstall "Infiniband Support"
+#yum install infiniband-diags perftest qperf opensm
+#yum -y install pciutils* gtk2* numactl* gcc-gfortran* bc* tcsh* tk*
+#systemctl start rdma.service 
+#systemctl start opensm.service
+
+# Run this command to see the state of the IB ports
+
+for i in `ls /sys/class/infiniband/*/ports/*/state`; do echo $i; cat $i; done
+
+ibv_devinfo
+ibv_devices
+ibhosts # To see the state of all fabrics
+
+#ascertain and configure the in ip
+ls /etc/sysconfig/network-scripts
+
+echo "Enter the IB interface to be configured:"
+read IB_int
+
+echo "Enter the IP address of the IB:"
+read IB_intAddr
+
+echo "Enter the netmask address  of the IB:"
+read Netmask_Addr
+
+echo "Enter the broadcast address  of the IB:"
+read Broadcast_Addr
+ifconfig $IB_int $IB_intAddr $Netmask_Addr $Broadcast_Addr
+#scp c2m3n07:/etc/sysconfig/network-scripts/ifcfg-ib0 /etc/sysconfig/network-scripts/
+
+

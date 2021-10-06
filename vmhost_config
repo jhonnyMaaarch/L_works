@@ -1,0 +1,36 @@
+#! /bin/bash
+
+# Install relevant VM packages
+yum install qemu-kvm libvirt virt-install libvirt-python virt-manager virt-install libvirt-client
+
+#configure br0 interface
+cd /etc/sysconfig/network-scripts/
+read -p "Enter interface to configure (e.g ifcfg-eth0 ):  " net_Int
+cp -p $net_Int $net_Int_orig
+
+scp xcatmn3:Ideal_vmHost_int_config ./$net_Int
+
+scp xcatmn3:ideal_br0_config ./ifcfg-br0
+
+cat $net_Int
+
+cat ifcfg-br0
+
+ifconfig 
+
+vi $net_Int
+
+vi ifcfg-br0
+
+cat $net_Int
+
+cat ifcfg-br0
+
+systemctl restart network
+
+systemctl status network
+systemctl start libvirtd.service
+systemctl status libvirtd.service
+
+virsh list --all
+

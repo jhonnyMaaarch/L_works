@@ -1,0 +1,79 @@
+#!/bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                            ###
+###                     email: osadeola@us.ibm.com                      ###
+###                     date: 09-18-2019                                ###
+###                                                                     ###
+###                                                                     ###
+###                                                                     ###
+########################################################################
+########################################################################
+
+passwd
+
+cd /etc/apt
+
+ls -lha
+
+mv sources.list sources.list_orig
+
+
+scp xcatmn3:/u/sunny/ubuntu16041_sources_file ./sources.list
+
+host us.archive.ubuntu.com
+
+host security.ubuntu.com
+
+host archive.ubuntu.com
+
+host archive.canonical.com
+
+read -p "Enter first digit(s) in the IP address(es) above (e.g 91): " f_digit
+read -p "Enter first disgit in netmask (e.g 255): " f_net
+read -p "Enter gateway address (e.g 192.168.180.247): " g_way
+
+route add -net "$f_digit".0.0.0 netmask "$f_net".0.0.0 gw $g_way
+
+route
+
+cat /etc/network/interfaces
+cd /etc/network
+mv interfaces interfaces_orig
+scp xcatmn3:/u/sunny/gpfsweb_interfaces ./interfaces
+
+vi interfaces
+
+cat interfaces
+
+cd /etc
+scp xcatmn3:/etc/resolv.conf /etc/resolv.conf
+cat /etc/resolv.conf
+apt-get update
+
+apt-get install autofs5
+
+scp xcatmn1:/etc/auto.linux /etc/auto.linux
+cd /etc
+tar xvf auto.linux
+
+cd /etc/init.d
+./autofs restart
+
+apt-get install ksh
+apt-get install m4
+
+apt-get install alien
+
+apt-get install devscripts
+
+apt-get install gawk
+
+uname -r
+
+dpkg -l
+
+sudo chmod -x /etc/cron.daily/mlocate
+
+
+echo "post install process is a SUCCESS!"

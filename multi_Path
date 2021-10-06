@@ -1,0 +1,19 @@
+#!/bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                         ###
+###                     email: osadeola@us.ibm.com                   ###
+###                     date: 09-18-2019                             ###
+###                                                                  ###
+###                                                                  ###
+###                                                                  ###
+########################################################################
+########################################################################
+lsscsi
+systemctl status multipathd.service
+cd /usr/share/doc/device-mapper-multipath-0.4.9
+cp -p multipath.conf /etc/
+systemctl start multipathd.service
+
+
+multipath -ll

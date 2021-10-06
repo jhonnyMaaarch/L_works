@@ -1,0 +1,113 @@
+#!/bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                         ###
+###                     email: osadeola@us.ibm.com                   ###
+###                     date: 01-07-2019                             ###
+### project: Module will require all parameters need for OS install  ###
+### and perform the instalation afterwards                           ###
+### latest update - 2/18/2020 - to list osimage                      ###        ###                                                                  ###
+########################################################################
+########################################################################
+read -p "Enter Node to install: " NodeName
+
+rpower $NodeName  stat
+if rpower $NodeName stat = "on"
+then
+    rpower $NodeName off
+fi
+if rpower $NodeName stat = "off"
+then
+    echo "$NodeName is ready to be provisioned"
+fi
+
+rinv $NodeName mac
+
+# add mac address
+read -p "provide the mac address to add to this node:" MacAddress
+
+read -p "provide the netboot parameter: " netBoot
+
+chdef $NodeName netboot=$netBoot
+chdef $NodeName primarynic=mac
+chdef $NodeName installnic=mac
+chdef $NodeName mac=$MacAddress
+
+# provide dhcp to no
+makedhcp $NodeName
+
+lsdef -t osimage
+# provide os image
+read -p "provide the osimage you want on node:" OSimage
+
+nodeset $NodeName osimage=$OSimage
+
+lsdef $NodeName
+# power on or or
+echo "are you ready to power on node:(y OR n)"
+read poweroN
+    if [ "$poweroN" = "n" ]
+    then
+        lsdef $NodeName
+    fi
+
+    if [ "$poweroN" = "y" ]
+    then
+    rpower $NodeName on
+    fi
+      
+# track progess through network install
+tail -f /var/log/messages | grep -i $MacAddress
+
+nodestat $NodeName
+
+ssh $NodeName
+
+#copy dns configuration over from the dhcp server
+scp 192.168.180.24:/etc/resolv.conf /etc/resolv.conf
+
+#install all the enabling packages/rpms
+yum -y install autofs xinetd kernel-devel gcc-c++ ksh gcc compat-libstdc++-33 rsh make rsh-server lsscsi net-tools bind-utils device-mapper-multipath nfs-utils flex-devel nfs*
+
+#copy over auto.master file - the automount master file for specifying directori# es to be controlled along with their corresponding map files.
+scp xcatmn3:/u/admin/master_files/auto.master.linux /etc/auto.master
+
+# copy over the auto.u - the actual u file with users directories
+scp xcatmn3:/u/admin/master_files/auto.u.master /etc/auto.u
+
+# start nfs service
+chkconfig --level 2345 nfs on
+
+# start autofs service
+chkconfig --level 2345 autofs on
+
+systemctl start nfs.service
+
+systemctl start autofs.service
+
+ls /u/shujun
+
+# initiate the xinetd activation process - xinetd is the daemon that starts ser
+# vices that provide internet services
+
+cd /u/shujun/scripts
+cp rsh-rh.tar /etc/xinetd.d
+cd /etc/xinetd.d
+tar xvf rsh-rh.tar
+service xinetd stop
+service xinetd start
+
+# scp xcatmn1:/u/admin/master_files/auto.u.master /etc/auto.u
+/u/gpfstest/network/NTP/setupntp.linux
+
+# configure static interface
+echo "Enter you NIC interface here: "
+read Nic_int
+/u/shujun/scripts/szinterface $Nic_int
+# Activate syslog
+
+mv -f  /etc/rsyslog.conf /etc/rsyslog.conf.orig
+mv -f  /etc/rsyslog.conf.XCATORIG /etc/rsyslog.conf
+service rsyslog stop
+service rsyslog start
+ls -l /var/log/messages

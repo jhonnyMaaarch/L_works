@@ -1,0 +1,48 @@
+# This documentaion serves as a map to vital scripts - their location and uses, as well as other meaninful information
+Contact: Sunny Adeola
+Email:   osadeola@us.ibm.com
+Publish Date: 11/26/2020
+
+1. The first script in this process is:
+-- /root/Node_def   # can be found in the /root. It enables you to define the node you are trying to install in the xcat 
+
+2. The second script:
+-- /root/redhat8_validator.sh   # this will verify for you whether a node is supported for RH 8 before you commence the installation process.
+ 
+-- /root/Node_install.py # can be found in the /root. It installs the defined node with your requested OS.
+
+-- /root/NodeInstall # You can also use this for the installation process. This does not present you with the OS options available on the xcat and may not present you with the mac address. The fist version provides you with all these parameters.
+
+3. The third script:
+-- /root/post_install_update5.py can be found in the /root. It executes the post installation (rpm install, interface config etc) process.
+-- /root/post_install_update5_el8.py. If your node is running RH8 or higher, you can use thise to setup the post_install process.
+The above two scripts have certain bugs which relates to the setup of ideal route and network interfaces. That bug is fixed in this next script
+
+--/root/newest_postinstall.py This tool will also assist you with the post-install process in 
+Redhat7
+--/root/newest_postinstall_v8.py This will do the same thing but with RH 8 nodes.
+
+--/root/os_post_install.py. You can also use this one to execute the post-install process. The bugs in earlier realeases have been fixed here. There is currently no RH version of this script, you will be informed when it is released.
+
+
+
+Scripts for creating, setting up VMs and managing the VM host
+
+1. First VM script. 
+-- /root/vmhost_setup.py #After your VM host installation and post-install setup. This script will enable you to setup the host for VM creating process. It will install all the necessary packages (rpms) providing virtualization services and also start the services. It will also create the vital bridge interface needed for vm guest creation. Currently, there is bug that prevents the node from becoming accessible through ssh after this script runs. This bug would be remedied in the next development. The workaround to this bug is to "rcons" into thenode or log into it via the public address (ssh <public ip>), the run the following commands:
+ifconfig br0 <ip address> netmask <netmask> broadcast <broadcast>
+ifconfig [primary interface e.g eno2] 0.0.0.0
+
+This should fix the problem.
+Also, you need to restart the vncserver with
+
+vncserver :[desired_number]
+
+All these bugs will hopefully be fixed in the next iteration.
+
+2. Second VM script
+-- /root/vmguest2.py   # This script will help you to build your VM guests. It will copy and build necessary files and images based on your input. You have to log into the VM host via vnc to conclude the process - setup disk and watch the installation take place.
+
+For questions, concerns, recommendations, contact:
+Sunny Adeola
+osadeola@us.ibm.com  

@@ -1,0 +1,5 @@
+#!/bin/bash
+host
+read -p "Enter BMC IP: " bmc_ip
+
+ipmitool -H $bmc_ip -U USERID -P PASSW0RD -I lanplus sol activate

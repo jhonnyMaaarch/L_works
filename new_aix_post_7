@@ -1,0 +1,28 @@
+### New process
+#!/bin/ksh
+print $1
+rcp c40abc2pn3:/.profile /.profile
+rcp c40abc2pn3:/etc/resolv.conf /etc/resolv.conf
+rcp c40abc2pn3:/etc/auto.aix /etc/auto.aix
+rcp c40abc2pn3:/etc/security/limits /etc/security/limits
+
+rsh $1 rm -rf /u
+rsh $1 mkdir /u
+rsh $1 "cd /etc;tar xvf auto.aix"
+rsh $1 "stopsrc -s automountd"
+sleep 5
+rsh $1 "startsrc -s automountd"
+rsh $1 "/etc/rc.nfs"
+rsh $1 rm -rf /.sh_history
+rsh $1 mkdir /.sh_history
+rsh $1 ls /u/
+
+rcp c40abc2pn3:/etc/auto/maps/auto.u /u/admin/master_files/auto.u.master
+rsh $1 "echo "+  +" > /.rhosts"
+
+
+/u/gpfstest/network/NTP/setupntp.linux
+
+rsh $1 cd /u/admin/ssh-ssl
+rsh $1 cd 71J # for AIX 7 61Q dor AIX 6
+"installp -aXgd. -Y all"

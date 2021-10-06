@@ -1,0 +1,44 @@
+#!/bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                         ###
+###                     email: osadeola@us.ibm.com                   ###
+###                     date: 07-23-2021                             ###
+### project: Module will configure appropriate interface             ###
+### ref: https://linuxhint.com/bash_conditional_statement/           ###
+########################################################################
+########################################################################
+ifconfig
+
+read -p "Enter interface to configure : " net_Int
+
+ifconfig $net_Int
+
+
+read -p "would you still like to configure interface (Y/N): " Int_conf
+
+if [[ $Int_conf == "Y" || $Int_conf == 'y' ]];then
+read -p "Enter the IP Address: " ip_Addr
+ifconfig $net_Int $ip_Addr netmask 255.255.255.0 broadcast 9.114.180.255
+cd /etc/sysconfig/network-scripts
+ls
+read -p "Enter the Node to copy from: " source_Node
+cp -p ifcfg-$net_Int ifcfg-$net_Int+'_orig'
+scp $source_Node:/etc/sysconfig/network-scripts/ifcfg-$net_Int ./ifcfg-$net_Int
+vi ifcfg-$net_Int
+cat ifcfg-$net_Int
+ifconfig $net_Int
+else
+ifconfig $net_Int
+fi  
+  
+#rpower $NodeName  stat
+#if rpower $NodeName stat = "on"
+#then
+#    rpower $NodeName off
+#fi
+#if rpower $NodeName stat = "off"
+#then
+#    echo "$NodeName is ready to be provisioned"
+#fi
+

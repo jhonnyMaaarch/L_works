@@ -1,0 +1,76 @@
+# After post_install setup
+# install all the necessary rpm packages in group
+yum groupinstall "Virtualization Hypervisor"
+
+yum groupinstall "Virtualization Client"
+
+yum groupinstall "Virtualization Platform"
+
+yum groupinstall "Virtualization Tools"
+
+# start the virtualization service
+
+systemctl status libvirtd.service
+
+systemctl start libvirtd.service
+
+# configure network bridge
+
+virsh net-destroy default
+
+virsh net-undefine default
+
+cd /etc/sysconfig/network-scripts
+
+vi ifcfg-br0
+
+###ifcfg-br0
+BRIDGING_OPTS=priority=28672
+TYPE=Bridge
+BOOTPROTO=static
+NAME=bridge-br0
+DEVICE=br0
+ONBOOT=yes
+IPADDR=10.28.0.70
+NETMASK=255.255.240.0
+BROADCAST=10.28.15.255
+
+vi ifcfg-original_interface
+###ifcfg-original_interface
+DEVICE=original_interface
+BOOTPROTO=static
+STARTMODE=onboot
+ONBOOT=yes
+BRIDGE=br0
+#IPADDR=10.28.0.70
+#NETMASK=255.255.240.0
+#GATEWAY=10.28.0.1
+
+
+brctl addbr br0
+
+brctl addif br0 original_interface
+
+ifconfig br0 <original_IP> netmask <original_mask> up
+
+ifconfig br0 up
+
+ifconfig original_interface 0.0.0.0
+
+brctl show
+
+# setup dns to associate IP to vm hostname in the xcat
+# for the sake of programming logic, i also replicated the host/ip resolution in# the vm host's /etc/hosts
+
+# set up vnc since virt-viewer is not very reliable for console access
+rpm -qa | grep vnc
+
+yum install vnc*
+vncserver -list
+vncserver -geometry 1840x940
+
+vi /etc/hostname
+c84f2u01.pok.stglabs.ibm.com
+
+yum install firewall*
+

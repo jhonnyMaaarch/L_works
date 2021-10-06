@@ -1,0 +1,44 @@
+#!/bin/bash
+########################################################
+## Author: Sunny Adeola                               ##
+## Email: osadeola@us.ibm.com                         ##
+## Install bash and vim in AIX node                   ##
+## Make sure your rpm files are in the appropriate    ##
+## location before running this mode                  ##
+##                                                    ##
+########################################################
+
+# The first install is for bash
+
+# go to ftp://public.dhe.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/bash/ to download the required file. If already downloaded do below
+
+rpm -ivh bash-4.2-3.aix6.1.ppc.rpm
+
+# verify install
+
+bash --version
+
+vi /etc/security/login.cfg
+
+# add /bin/bash to the end of the string
+
+read -p "Enter /bin/bash at the end of the line (e.g /bin/bash): " bin_bash
+
+shells = /bin/sh,/bin/bsh,/bin/csh,/bin/ksh,/bin/tsh,/bin/ksh93,/usr/bin
+/sh,/usr/bin/bsh,/usr/bin/csh,/usr/bin/ksh,/usr/bin/tsh,/usr/bin/ksh93,/usr/bin/
+rksh,/usr/bin/rksh93,/usr/sbin/uucp/uucico,/usr/sbin/sliplogin,/usr/sbin/snappd,
+$bin_bash
+
+# run the following command
+
+read -p "Enter username (e.g guod): " username
+
+mkuser $username
+
+chsh $username /bin/bash
+
+#if the above is not valid, simply run the following
+
+chsh root /bin/bash
+
+

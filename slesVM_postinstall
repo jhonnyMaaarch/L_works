@@ -1,0 +1,54 @@
+#!/bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                         ###
+###                     email: osadeola@us.ibm.com                   ###
+###                     date:09-15-2019                              ###
+### project: Module will perform post installation for sles nodes    ###
+###                                                                  ###
+###                                                                  ###
+########################################################################
+########################################################################
+
+echo "Change the default password."
+
+passwd
+
+zypper lr -u
+
+read -p "Enter OS directory for repository (e.g sles12le/ppcc64le/2): " repo_path
+
+readp -p "Enter repository name (e.g sles12): " repo_name
+zypper addrepo http://192.168.180.242/install/$repo_path $repo_name
+
+zypper ref
+
+zypper lr -u
+
+zypper update
+
+zypper in gcc gcc-32bit gcc43 gcc43-32bit gcc43-c++ gcc-c++ glibc-devel glibc-devel-32bit kernel-default-devel kernel-source libgomp43-32bit libstdc++43-devel libstdc++-devel linux-kernel-headers rsh-server
+
+scp 192.168.180.247:/etc/resolv.conf /etc/resolv.conf
+scp xcatmn1:/etc/auto.linux /etc/auto.linux
+cd /etc
+tar xvf auto.linux
+chkconfig --set nfsserver on
+chkconfig --set autofs on
+service nfsserver stop
+sleep 2
+service nfsserver start
+service autofs stop
+sleep 2
+service autofs start
+ls /u/shujun
+cd /etc/xinetd.d
+tar xvf /u/shujun/scripts/rsh-suse.tar
+service xinetd stop
+service xinetd start
+/u/gpfstest/network/NTP/setupntp.linux
+
+cd /etc/sysconfig/network
+scp xcatmn2:/u/sunny/sles_dhcp_file ./
+mv sles_dhcp_file dhcp
+

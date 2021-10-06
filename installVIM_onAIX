@@ -1,0 +1,49 @@
+#!/bin/bash
+########################################################
+## Author: Sunny Adeola                               ##
+## Email: osadeola@us.ibm.com                         ##
+## Install bash and vim in AIX node                   ##
+## Make sure your rpm files are in the appropriate    ##
+## location before running this mode                  ##
+##                                                    ##
+########################################################
+
+# The first install is for bash
+
+# go to ftp://public.dhe.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/vim to download the required file. If already downloaded do below
+
+rpm -ivh vim-common-7.4-1.aix6.1.ppc.rpm
+rpm -ivh vim-enhanced-7.4-1.aix6.1.ppc.rpm
+
+# get more info about files
+rpm -qip vim-enhanced-7.4-1.aix6.1.ppc.rpm
+rpm -qip vim-common-7.4-1.aix6.1.ppc.rpm
+
+# After you have succeeded in installing the above fileS do the below
+
+cp /usr/shae/vim/vim63/vimrc_example.vim /usr/share/vim/vim63/macros/vimrc
+echo "alias vi='TERM=aixterm vim'" >> /etc/profile
+
+rm -f *.rpm
+
+
+read -p "Enter /bin/bash at the end of the line (e.g /bin/bash): " bin_bash
+
+shells = /bin/sh,/bin/bsh,/bin/csh,/bin/ksh,/bin/tsh,/bin/ksh93,/usr/bin
+/sh,/usr/bin/bsh,/usr/bin/csh,/usr/bin/ksh,/usr/bin/tsh,/usr/bin/ksh93,/usr/bin/
+rksh,/usr/bin/rksh93,/usr/sbin/uucp/uucico,/usr/sbin/sliplogin,/usr/sbin/snappd,
+$bin_bash
+
+# run the following command
+
+read -p "Enter username (e.g guod): " username
+
+mkuser $username
+
+chsh $username /bin/bash
+
+#if the above is not valid, simply run the following
+
+chsh root /bin/bash
+
+

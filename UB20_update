@@ -1,0 +1,70 @@
+#!/bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                            ###
+###                     email: osadeola@us.ibm.com                      ###
+###                     date: 07-13-2020                                ###
+###                                                                     ###
+###                                                                     ###
+###                                                                     ###
+########################################################################
+########################################################################
+
+lsblk -a
+
+df -h
+
+#passwd
+
+#echo -p "Enter hostname: " hostname
+
+#host $hostname
+
+cd /etc
+cp -p resolv.conf resolv.conf_orig
+scp xcatmn3:/u/sunny/ubuntu_resolv.conf ./resolv.conf
+cat resolv.conf
+
+ls -lha
+
+uname -r
+$kernel = uname -r
+
+echo "Your kernel is "$kernel""
+
+cd /etc/apt
+
+cp -p sources.list sources.list_orig
+
+read -p  "Enter the ubuntu version to upgrade to(e.g ub20 or ub18): " os_ver
+
+#read os_ver
+     if [ "os_ver" = "ub18" ]
+     then
+     scp xcatmn3:/u/sunny/ubuntu18043_sources_file /etc/apt/sources.list
+     #cp -p ubuntu18043_sources_file sources.list
+     fi
+     
+     if [ "os_ver" = "ub20" ]
+     then
+     scp xcatmn3:/u/sunny/ubuntu2004_sources_file /etc/apt/sources.list
+     #cp -p ubuntu2004_sources_file sources.list
+     fi
+
+#uname -r
+#$kernel = uname -r
+sudo apt update && sudo apt upgrade
+
+sudo apt list –upgradable
+
+sudo apt upgrade
+
+sudo apt --purge autoremove
+
+sudo apt install update-manager-core
+
+sudo do-release-upgrade
+
+
+
+echo "post install process is a SUCCESS!"

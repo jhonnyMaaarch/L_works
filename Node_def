@@ -1,0 +1,33 @@
+#!/bin/bash
+######################################################
+####Module will define node objects and parameters####
+# Developed by: Sunny Adeola                      ####
+# Date:         06/18/2019                        ####
+# Contact:      osadeola@us.ibm.com               ####
+######################################################
+
+read -p "Enter Node name: " Node_name
+host $Node_name
+#host_ip = host $Node_name
+
+#echo "The ip address is $host_ip"
+read -p "Enter the ip address: " host_ip
+echo "The ip address is $host_ip"
+
+./get_BMC_IP.py
+
+read -p "Enter the BMC IP address: " bmc_ip
+
+#host $Node_namebmc
+#bmc_ip = host $Node_namebmc
+
+echo "The BMC IP is $bmc_ip"
+
+mkdef -t node $Node_name --template x86_64-template ip=$host_ip bmc=$bmc_ip bmcusername=USERID bmcpassword=PASSW0RD
+
+makehosts $Node_name
+makedns -n
+rinv $Node_name all
+makegocons $Node_name
+echo "remote console successfully setup!"
+lsdef $Node_name

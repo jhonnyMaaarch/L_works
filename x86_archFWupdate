@@ -1,0 +1,42 @@
+#!/bin/bash
+#############################################################################
+####Module update the BIOS/UEFI and IMM/IMM2 firmware in x86_64 system x ####
+#### Machines.                                                           ####
+#                 Developed by: Sunny Adeola                             ####
+#                 Date:         02/13/2020                               ####
+#                 Contact:      osadeola@us.ibm.com                      ####
+# Important note: Make sure the iflash64, get_BMC_IP.py  and the fw      ####
+# packages to be used in the fw update are in the same directory as this ####
+# script.                                `                               #### 
+#                                                                        ####
+#############################################################################
+
+echo " You only need to provide the following details and I will do the rest. "
+echo " BMC/IMM IP of the machine to be installed. I will help with the listing
+the definition if it helps."
+read -p "Enter  host name (e.g c63f1u7): " hostName
+rpower $hostName  stat
+if rpower $hostName stat = "on"
+then
+    rpower $hostName off
+fi
+if rpower $hostName stat = "off"
+then
+    echo "$hostName is ready to be provisioned"
+fi
+
+lsdef $hostName
+echo "copy the ip address corresponding the to BMC parameter and give it to me."
+
+read -p "Enter the BMC IP address:(e.g 192.168.100.1): " bmc_ip
+
+echo "The BMC IP is $bmc_ip"
+echo "Good! Now provide me with the username that you use to access the BMC."
+lsdef $hostName
+echo "It should be the one corresponding to the bmcusername parameter. It is okay if you can find it. I will improvise."
+read -p "Enter the username(e.g USERID): " user_name
+read -p "Enter the password: " pass_word
+echo "Look among the following list copy the fw package to be updated."
+ls
+read -p "Enter the package here: " pack_age
+./iflash64 --host $bmc_ip --user $user_name --password $pass_word --package $pack_age --skip_min_level --force --no-reboot

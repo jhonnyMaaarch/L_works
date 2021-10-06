@@ -1,0 +1,48 @@
+#!/bin/bash
+########################################################################
+########################################################################
+###                     author: Sunny Adeola                         ###
+###                     email: osadeola@us.ibm.com                   ###
+###                     date: 01-07-2019                             ###
+### project: Module will require all IB parameters needed for IB con ###
+### figuration and perform the configuration                         ###
+###                                                                  ###
+########################################################################
+########################################################################
+
+ibv_devinfo
+ibv_devices
+
+#Run relevant packages
+yum groupinstall "Infiniband Support"
+yum install infiniband-diags perftest qperf opensm
+yum -y install pciutils* gtk2* numactl* gcc-gfortran* bc* tcsh* tk*
+systemctl start rdma.service 
+systemctl start opensm.service
+
+# Run this command to see the state of the IB ports
+
+for i in `ls /sys/class/infiniband/*/ports/*/state`; do echo $i; cat $i; done
+
+ibv_devinfo
+ibv_devices
+ibhosts # To see the state of all fabrics
+
+#ascertain and configure the in ip
+ls /etc/sysconfig/network-scripts
+
+echo "Enter the IB interface to be configured:"
+read IB_int
+
+echo "Enter the IP address of the IB:"
+read IB_intAddr
+
+echo "Enter the netmask address  of the IB:"
+read Netmask_Addr
+
+echo "Enter the broadcast address  of the IB:"
+read Broadcast_Addr
+ifconfig $IB_int $IB_intAddr $Netmask_Addr $Broadcast_Addr
+#scp c2m3n07:/etc/sysconfig/network-scripts/ifcfg-ib0 /etc/sysconfig/network-scripts/
+
+
